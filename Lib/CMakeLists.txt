@@ -9,7 +9,7 @@
 # license found in the license.txt file in the root directory of this source tree.
 #
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.12)
 
 set(SLIKENET_INTERNAL_INCLUDE_DIRS 
 	${SLikeNet_SOURCE_DIR}/Source/include

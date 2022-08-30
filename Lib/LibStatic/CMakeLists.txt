@@ -9,9 +9,11 @@
 # license found in the license.txt file in the root directory of this source tree.
 #
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.12)
 
-project(SLikeNetLibStatic)
+cmake_policy(SET CMP0048 NEW)
+
+project(SLikeNetLibStatic VERSION ${SLikeNet_VERSION})
 
 FILE(GLOB ALL_HEADER_SRCS ${SLikeNet_SOURCE_DIR}/Source/include/slikenet/*.h)
 FILE(GLOB ALL_COMPATIBILITY_HEADER_SRC ${SLikeNet_SOURCE_DIR}/Source/*.h)
@@ -21,19 +23,10 @@ FILE(GLOB CRYPTO_CPP_SRCS ${SLikeNet_SOURCE_DIR}/Source/src/crypto/*.cpp)
 
 add_library(SLikeNetLibStatic STATIC ${ALL_CPP_SRCS} ${CRYPTO_CPP_SRCS} ${ALL_HEADER_SRCS})
 
-#if(NOT (CMAKE_VERSION VERSION_LESS 2.8))
-	# target_include_directories is only supported since CMake 2.8
-#	target_include_directories(SLikeNetLibStatic PUBLIC
-#		$<BUILD_INTERFACE:${SLIKENET_INTERNAL_INCLUDE_DIRS}>
-#		$<INSTALL_INTERFACE:include/slikenet-${SLikeNet_VERSION}>
-#	)
-#else()
-	include_directories(${SLIKENET_INTERNAL_INCLUDE_DIRS})
-#endif()
+include_directories(${SLIKENET_INTERNAL_INCLUDE_DIRS})
 
 # set the version number
 set_target_properties(SLikeNetLibStatic PROPERTIES
-	VERSION ${SLikeNet_VERSION}
 	SOVERSION ${SLikeNet_API_VERSION}
 )
 

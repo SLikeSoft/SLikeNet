@@ -65,7 +65,6 @@
 // #include "DbgHelp.h"
 // Link with Dbghelp.lib ws2_32.lib
 
-#include "slikenet/defines.h" // used for SLNet -> RakNet namespace change in RAKNET_COMPATIBILITY mode
 namespace SLNet {
 
 // Possible actions to take on a crash.  If you want to restart the app as well, see the CrashRelauncher sample.

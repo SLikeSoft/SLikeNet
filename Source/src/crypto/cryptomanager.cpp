@@ -45,7 +45,7 @@ namespace SLNet
 				if (RAND_bytes(m_sessionKey, EVP_MAX_KEY_LENGTH) == 0) {
 					return false; // failed to initialize the random session key
 				}
-				if (RAND_pseudo_bytes(m_initializationVector, EVP_MAX_IV_LENGTH) == 0) {
+				if (RAND_bytes(m_initializationVector, EVP_MAX_IV_LENGTH) == 0) {
 					return false; // failed to initialize the initialization vector
 				}
 
@@ -69,18 +69,18 @@ namespace SLNet
 
 				// #high - review usage of the CBC mode here --- not the best nowadays
 				// #med - add engine support to use HW-acceleration
-				if (EVP_EncryptInit_ex(&m_encryptionContext, EVP_aes_256_cbc(), nullptr, m_sessionKey, m_initializationVector) == 0) {
+				if (EVP_EncryptInit_ex(m_encryptionContext, EVP_aes_256_cbc(), nullptr, m_sessionKey, m_initializationVector) == 0) {
 					return false; // failed to initialize the encryption context
 				}
 
 				int bytesWritten1;
 				// note: static_cast<> safe here, since GetRequiredEncrpytionBufferSize()-check ensured dataLength is <= int::max()
-				if (EVP_EncryptUpdate(&m_encryptionContext, outBuffer, &bytesWritten1, plaintext, static_cast<int>(dataLength)) == 0) {
+				if (EVP_EncryptUpdate(m_encryptionContext, outBuffer, &bytesWritten1, plaintext, static_cast<int>(dataLength)) == 0) {
 					return false; // encryption failed
 				}
 				RakAssert(static_cast<size_t>(bytesWritten1) <= inOutBufferSize);
 				int bytesWritten2;
-				if (EVP_EncryptFinal_ex(&m_encryptionContext, outBuffer + bytesWritten1, &bytesWritten2) == 0) {
+				if (EVP_EncryptFinal_ex(m_encryptionContext, outBuffer + bytesWritten1, &bytesWritten2) == 0) {
 					return false; // failed final encryption step
 				}
 				RakAssert(static_cast<size_t>(bytesWritten1) + static_cast<size_t>(bytesWritten2) <= inOutBufferSize);
@@ -112,18 +112,18 @@ namespace SLNet
 
 				// #high - review usage of the CBC mode here --- not the best nowadays
 				// #med - add engine support to use HW-acceleration
-				if (EVP_DecryptInit_ex(&m_decryptionContext, EVP_aes_256_cbc(), nullptr, m_sessionKey, m_initializationVector) == 0) {
+				if (EVP_DecryptInit_ex(m_decryptionContext, EVP_aes_256_cbc(), nullptr, m_sessionKey, m_initializationVector) == 0) {
 					return false; // failed to initialize the decryption context
 				}
 
 				int bytesWritten1;
 				// static cast safe due to size-check above
-				if (EVP_DecryptUpdate(&m_decryptionContext, outBuffer, &bytesWritten1, encryptedtext, static_cast<int>(dataLength)) == 0) {
+				if (EVP_DecryptUpdate(m_decryptionContext, outBuffer, &bytesWritten1, encryptedtext, static_cast<int>(dataLength)) == 0) {
 					return false; // decryption failed
 				}
 				RakAssert(static_cast<size_t>(bytesWritten1) <= inOutBufferSize);
 				int bytesWritten2;
-				if (EVP_DecryptFinal_ex(&m_decryptionContext, outBuffer + bytesWritten1, &bytesWritten2) == 0) {
+				if (EVP_DecryptFinal_ex(m_decryptionContext, outBuffer + bytesWritten1, &bytesWritten2) == 0) {
 					return false; // failed final decryption step
 				}
 				RakAssert(static_cast<size_t>(bytesWritten1) + static_cast<size_t>(bytesWritten2) <= inOutBufferSize);
@@ -174,8 +174,8 @@ namespace SLNet
 			}
 
 			// initialization list
-			EVP_CIPHER_CTX CCryptoManager::m_decryptionContext;
-			EVP_CIPHER_CTX CCryptoManager::m_encryptionContext;
+			EVP_CIPHER_CTX* CCryptoManager::m_decryptionContext = EVP_CIPHER_CTX_new();
+			EVP_CIPHER_CTX* CCryptoManager::m_encryptionContext = EVP_CIPHER_CTX_new();
 			unsigned char CCryptoManager::m_sessionKey[EVP_MAX_KEY_LENGTH];
 			unsigned char CCryptoManager::m_initializationVector[EVP_MAX_IV_LENGTH];
 			bool CCryptoManager::m_Initialized = false;

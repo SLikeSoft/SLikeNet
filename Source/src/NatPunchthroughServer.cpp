@@ -331,7 +331,10 @@ void NatPunchthroughServer::OnClosedConnection(const SystemAddress &systemAddres
 			if (connectionAttempt->attemptPhase==ConnectionAttempt::NAT_ATTEMPT_PHASE_GETTING_RECENT_PORTS)
 			{
 				otherUser->isReady=true;
-				freedUpInProgressUsers.Insert(otherUser, _FILE_AND_LINE_ );
+				
+				if (connectionAttempt->sender != user || connectionAttempt->recipient != user) {
+					freedUpInProgressUsers.Insert(otherUser, _FILE_AND_LINE_ );
+				}
 			}
 
 			otherUser->DeleteConnectionAttempt(connectionAttempt);

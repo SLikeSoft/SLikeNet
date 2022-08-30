@@ -148,7 +148,7 @@ struct RAK_DLL_EXPORT SocketDescriptor
 	char hostAddress[32];
 
 	/// IP version: For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
-	/// IPV6 is the newer internet protocol. Instead of addresses such as natpunch.slikesoft.com, you may have an address such as fe80::7c:31f7:fec4:27de%14.
+	/// IPV6 is the newer internet protocol. Instead of addresses such as 192.168.0.1, you may have an address such as fe80::7c:31f7:fec4:27de%14.
 	/// Encoding takes 16 bytes instead of 4, so IPV6 is less efficient for bandwidth.
 	/// On the positive side, NAT Punchthrough is not needed and should not be used with IPV6 because there are enough addresses that routers do not need to create address mappings.
 	/// RakPeer::Startup() will fail if this IP version is not supported.
@@ -178,6 +178,7 @@ struct RAK_DLL_EXPORT SystemAddress
 {
 	/// Constructors
 	SystemAddress();
+	SystemAddress(const SystemAddress& input) = default;
 	SystemAddress(const char *str);
 	SystemAddress(const char *str, unsigned short port);
 
@@ -406,7 +407,7 @@ typedef uint64_t NetworkID;
 /// This represents a user message from another system.
 struct Packet
 {
-	/// The system that send this packet.
+	/// The system that sent this packet.
 	SystemAddress systemAddress;
 
 	/// A unique identifier for the system that sent this packet, regardless of IP address (internal / external / remote system)

@@ -2580,19 +2580,19 @@ int RakPeer::GetMTUSize( const SystemAddress target ) const
 // Description:
 // Returns the number of IP addresses we have
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unsigned int RakPeer::GetNumberOfAddresses( void )
+unsigned int RakPeer::GetNumberOfAddresses(void)
 {
 	if (IsActive() == false) {
 		FillIPList();
 	}
 
-	for (unsigned int i = 0; i < MAXIMUM_NUMBER_OF_INTERNAL_IDS && ipList[i] != UNASSIGNED_SYSTEM_ADDRESS; i++) {
-		if (ipList[i] == UNASSIGNED_SYSTEM_ADDRESS) {
-			return i; // first unassigned address entry found -> end of address list reached
-		}
+	int i = 0;
+
+	while (i < MAXIMUM_NUMBER_OF_INTERNAL_IDS && ipList[i] != UNASSIGNED_SYSTEM_ADDRESS) {
+		i++;
 	}
 
-	return MAXIMUM_NUMBER_OF_INTERNAL_IDS;
+	return i;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5754,7 +5754,12 @@ bool RakPeer::RunUpdateCycle(BitStream &updateBitStream )
 				else
 				{
 
-					int MTUSizeIndex = rcs->requestsMade / (rcs->sendConnectionAttemptCount/NUM_MTU_SIZES);
+					int MTUSizeIndex = 0;
+					
+					if (rcs->sendConnectionAttemptCount/NUM_MTU_SIZES > 0) {
+						rcs->requestsMade / (rcs->sendConnectionAttemptCount/NUM_MTU_SIZES);
+					}
+					
 					if (MTUSizeIndex>=NUM_MTU_SIZES)
 						MTUSizeIndex=NUM_MTU_SIZES-1;
 					rcs->requestsMade++;

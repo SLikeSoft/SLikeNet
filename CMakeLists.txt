@@ -9,7 +9,7 @@
 # license found in the license.txt file in the root directory of this source tree.
 #
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.12)
 
 # CMake policy settings
 if( POLICY CMP0037 )
@@ -18,14 +18,10 @@ endif()
 if( POLICY CMP0042 )
 	cmake_policy(SET CMP0042 NEW) # CMake 3.0 warning: Use @rpath in a target's install name.
 endif()
+cmake_policy(SET CMP0048 NEW)
 
-project(SLikeNet)
+project(SLikeNet VERSION 0.2.0)
 
-# version number
-set(SLikeNet_VERSION_MAJOR "0")
-set(SLikeNet_VERSION_MINOR "2")
-set(SLikeNet_VERSION_PATCH "0")
-set(SLikeNet_VERSION ${SLikeNet_VERSION_MAJOR}.${SLikeNet_VERSION_MINOR}.${SLikeNet_VERSION_PATCH})
 set(SLikeNet_API_VERSION ${SLikeNet_VERSION_MAJOR}.${SLikeNet_VERSION_MINOR})
 
 # explicitly enable @rpath in the install name for any shared library being built (for cmake >=2.8.12 and <3.0 - it's enabled by default for >= 3.0)

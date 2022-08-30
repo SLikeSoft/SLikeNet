@@ -628,7 +628,7 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 		hints.ai_family = AF_INET;
 	else
 		hints.ai_family = AF_UNSPEC;
-	INT error = getaddrinfo(ipPart, "", &hints, &servinfo);
+	int error = getaddrinfo(ipPart, "", &hints, &servinfo);
 	if (servinfo==0 && error != 0)
 	{
 		if (ipVersion==6)

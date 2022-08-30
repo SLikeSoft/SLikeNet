@@ -46,7 +46,7 @@ typedef double MicrosecondsPerByte;
 #define CC_RAKNET_UDT_PACKET_HISTORY_LENGTH 64
 #define RTT_HISTORY_LENGTH 64
 
-/// Sizeof an UDP header in byte
+/// Sizeof an UDP header in bytes
 #define UDP_HEADER_SIZE 28
 
 #define CC_DEBUG_PRINTF_1(x)

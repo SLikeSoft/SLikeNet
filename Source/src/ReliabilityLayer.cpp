@@ -919,7 +919,7 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer(
 						if (internalPacket->nextActionTime != 0) {
 							internalPacket->nextActionTime = timeRead;
 						}
-					}				
+					}
 
 					messageNumberNode = messageNumberNode->next;
 				}
@@ -1858,7 +1858,7 @@ void ReliabilityLayer::UpdateInternal( RakNetSocket2 *s, SystemAddress &systemAd
 	}
 
 
-	// Due to thread vagarities and the way I store the time to avoid slow calls to SLNet::GetTime
+	// Due to thread jitter and the way I store the time to avoid slow calls to SLNet::GetTime
 	// time may be less than lastAck
 #if CC_TIME_TYPE_BYTES==4
 	if ( statistics.messagesInResendBuffer!=0 && AckTimeout(time) )
@@ -1956,8 +1956,8 @@ void ReliabilityLayer::UpdateInternal( RakNetSocket2 *s, SystemAddress &systemAd
 		dhf.hasBAndAS=false;
 		ResetPacketsAndDatagrams();
 
-		int transmissionBandwidth = congestionManager.GetTransmissionBandwidth(time, timeSinceLastTick, unacknowledgedBytes,dhf.isContinuousSend);
-		int retransmissionBandwidth = congestionManager.GetRetransmissionBandwidth(time, timeSinceLastTick, unacknowledgedBytes,dhf.isContinuousSend);
+		int64_t transmissionBandwidth = congestionManager.GetTransmissionBandwidth(time, timeSinceLastTick, unacknowledgedBytes,dhf.isContinuousSend);
+		int64_t retransmissionBandwidth = congestionManager.GetRetransmissionBandwidth(time, timeSinceLastTick, unacknowledgedBytes,dhf.isContinuousSend);
 		if (retransmissionBandwidth>0 || transmissionBandwidth>0)
 		{
 			statistics.isLimitedByCongestionControl=false;
@@ -2828,10 +2828,14 @@ InternalPacket* ReliabilityLayer::CreateInternalPacketFromBitStream(SLNet::BitSt
 		internalPacket->splitPacketCount=0;
 	}
 
+	const int maxPacketSize = 1024 * 1024 * 4;
+	const int maxPacketSplit = (maxPacketSize + (MINIMUM_MTU_SIZE - 1)) / MINIMUM_MTU_SIZE;
+	
 	if (readSuccess==false ||
 		internalPacket->dataBitLength==0 ||
 		internalPacket->reliability>=NUMBER_OF_RELIABILITIES ||
-		internalPacket->orderingChannel>=32 || 
+		internalPacket->orderingChannel>=32 ||
+		internalPacket->splitPacketCount > maxPacketSplit ||
 		(hasSplitPacket && (internalPacket->splitPacketIndex >= internalPacket->splitPacketCount)))
 	{
 		// If this assert hits, encoding is garbage

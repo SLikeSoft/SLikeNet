@@ -61,7 +61,7 @@ enum DefaultMessageIDTypes
 	//
 	/// These types are never returned to the user.
 	/// Ping from a connected system.  Update timestamps (internal use only)
-	ID_CONNECTED_PING,  
+	ID_CONNECTED_PING,
 	/// Ping from an unconnected system.  Reply but do not update timestamps. (internal use only)
 	ID_UNCONNECTED_PING,
 	/// Ping from an unconnected system.  Only reply if we have open connections. Do not update timestamps. (internal use only)

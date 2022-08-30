@@ -20,8 +20,8 @@ namespace SLNet
 				// class members
 				// note: using distinct contexts for encryption/decryption to prevent potential for race conditions
 				// #med - consider moving to SessionEncrypter class
-				static EVP_CIPHER_CTX m_decryptionContext;
-				static EVP_CIPHER_CTX m_encryptionContext;
+				static EVP_CIPHER_CTX* m_decryptionContext;
+				static EVP_CIPHER_CTX* m_encryptionContext;
 				static unsigned char m_initializationVector[EVP_MAX_IV_LENGTH];
 				static unsigned char m_sessionKey[EVP_MAX_KEY_LENGTH];
 				static bool m_Initialized;

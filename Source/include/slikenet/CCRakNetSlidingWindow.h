@@ -16,27 +16,32 @@
 /*
 http://www.ssfnet.org/Exchange/tcp/tcpTutorialNotes.html
 
-cwnd=max bytes allowed on wire at once
+additive increase/multiplicative decrease (AIMD) algorithm
+ closest to TCP Tahoe with no duplicate ACK handling https://en.wikipedia.org/wiki/TCP_congestion_control
+cwnd: congestion window, max bytes allowed on wire at once
+ssthresh: slow start threshold
 
 Start:
-cwnd=mtu
-ssthresh=unlimited
-
-Slow start:
-On ack cwnd*=2
-
-congestion avoidance:
-On ack during new period
-cwnd+=mtu*mtu/cwnd
-
-on loss or duplicate ack during period:
-sshtresh=cwnd/2
-cwnd=MTU
-This reenters slow start
+ cwnd = mtu
+ ssthresh = unlimited
 
 If cwnd < ssthresh, then use slow start
 else use congestion avoidance
 
+Slow start:
+ On ack cwnd += MTU
+
+congestion avoidance:
+ On ack during new period
+ cwnd += mtu*mtu/cwnd
+
+on nak:
+ sshtresh = cwnd/2
+
+on timeout:
+ sshtresh = cwnd/2
+ cwnd = MTU
+ This reenters slow start
 
 */
 
@@ -96,8 +101,8 @@ class CCRakNetSlidingWindow
 	/// Update over time
 	void Update(CCTimeType curTime, bool hasDataToSendOrResend);
 
-	int GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend);
-	int GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend);
+	int64_t GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint64_t unacknowledgedBytes, bool isContinuousSend);
+	int64_t GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint64_t unacknowledgedBytes, bool isContinuousSend);
 
 	/// Acks do not have to be sent immediately. Instead, they can be buffered up such that groups of acks are sent at a time
 	/// This reduces overall bandwidth usage

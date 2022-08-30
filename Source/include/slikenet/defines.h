@@ -49,12 +49,6 @@
 #endif // SWIG
 #endif // _FILE_AND_LINE_
 
-/// Define RAKNET_COMPATIBILITY to enable API compatibility with RakNet.
-/// This allows you to keep existing code which was compatible with RakNet 4.082 unmodified and
-/// use SLikeNet as an in-place replacement for the RakNet library without having to modify any
-/// of your code.
-// #define RAKNET_COMPATIBILITY
-
 /// Define __BITSTREAM_NATIVE_END to NOT support endian swapping in the BitStream class.  This is faster and is what you should use
 /// unless you actually plan to have different endianness systems connect to each other
 /// Enabled by default.
@@ -132,7 +126,7 @@
 #endif
 
 /// This is the maximum number of reliable user messages that can be on the wire at a time
-/// If this is too low, then high ping connections with a large throughput will be underutilized
+/// If this is too low, then high ping connections with a large throughput will be underutilised
 /// This will be evident because RakNetStatistics::messagesInSend buffer will increase over time, yet at the same time the outgoing bandwidth per second is less than your connection supports
 #ifndef RESEND_BUFFER_ARRAY_LENGTH
 #define RESEND_BUFFER_ARRAY_LENGTH 512
@@ -218,15 +212,6 @@
 // #low - consider introducing GiB/MiB/KiB-functions and then define as GiB(4)?
 #ifndef SLNET_MAX_RETRIEVABLE_FILESIZE
 #define SLNET_MAX_RETRIEVABLE_FILESIZE (0xFFFFFFFF)
-#endif
-
-// #blocker_2_0 - remove RAKNET_COMPATIBILITY
-#ifdef RAKNET_COMPATIBILITY
-// note: we cannot use namespace aliases here since we need to ensure ABI compatibility with shared libraries/DLLs
-// if we'd use a namespace alias, the names in the DLLs would still point to the actual namespace (SLNet) rather
-// than the alias namespace and old apps would not be able to use the DLL as an in-place replacement
-// hence, go with a simple preprocessor macro which will replace the SLNet namespace names with RakNet
-#define SLNet RakNet
 #endif
 
 #endif // __RAKNET_DEFINES_H
